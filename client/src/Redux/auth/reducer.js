@@ -1,4 +1,4 @@
-import { LOGIN_ERROR, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, REGISTER_SUCCESS } from "./actionTypes"
+import { LOGIN_ADMIN_SUCCESS, LOGIN_ERROR, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_ERROR, REGISTER_REQUEST, REGISTER_SUCCESS } from "./actionTypes"
 
 const initState = {
     loading: false,
@@ -6,8 +6,8 @@ const initState = {
     isRegister: false,
     auth: false,
     user: "",
-    login_token: null || localStorage.getItem('logToken'),
-    register_token: !!localStorage.getItem('authToken') || ""
+    admin:false,
+    admindata:{}
 }
 
 export const authReducer = (state = initState, { type, payload }) => {
@@ -21,10 +21,6 @@ export const authReducer = (state = initState, { type, payload }) => {
         }
         case REGISTER_SUCCESS: {
 
-            // if (payload !== 'Try loggin in, User already exist') {
-            //     localStorage.setItem('authToken', payload.accessToken)
-            //     localStorage.setItem('email', payload.user.email)
-            // }
             return {
                 ...state,
                 isRegister: true,
@@ -51,16 +47,21 @@ export const authReducer = (state = initState, { type, payload }) => {
 
         }
         case LOGIN_SUCCESS: {
-            //    if (payload !== 'Invalid Credentials') {
-            //         localStorage.setItem('logToken', payload.accessToken)
-            //         localStorage.setItem('logUser', JSON.stringify(payload.user))
-            //     }
             return {
                 ...state,
                 auth: true,
                 user: payload,
                 iserror: false,
                 loading: false,
+
+            };
+
+        }
+        case LOGIN_ADMIN_SUCCESS: {
+            return {
+                ...state,
+               admin:true,
+               auth:true
             };
 
         }
@@ -71,6 +72,15 @@ export const authReducer = (state = initState, { type, payload }) => {
                 auth: false,
                 iserror: false,
             };
+        }
+        case LOGOUT_SUCCESS: {
+            return {
+                ...state,
+                auth: false,
+                admin:false,
+                user: "",
+            };
+
         }
         default: {
             return state

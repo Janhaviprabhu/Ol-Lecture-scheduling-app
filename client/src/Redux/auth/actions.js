@@ -25,12 +25,12 @@ export const loginUser = (creds) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST })
     try {
         let res = await axios.post("http://localhost:8080/login", creds);
-        dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+        dispatch({ type: LOGIN_SUCCESS, payload: res.data })
+        console.log(res.data.message);
         alert("Login successfull")
         return res.data;
     } catch (err) {
         dispatch({ type: LOGIN_ERROR })
-        console.log(err);
-        alert(err)
+        alert("Incorrect! Enter correct credentials!!")
     }
 }

@@ -12,23 +12,30 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { loginUser } from "../Redux/auth/actions"
+import { LOGIN_ADMIN_SUCCESS } from "../Redux/auth/actionTypes";
 
 const Login = () => {
   const { logLoading, loggedUser, logError } = useSelector(
     (store) => store.auth
   );
+
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(formData);
-    dispatch(loginUser(formData)).then(
-      // loggedUser: payload,
-    //   console.log(loggedUser)
-   navigate('/')
-    );
+    if(formData.email==="admin@gmail.com" && formData.password==="admin123"){
+          dispatch({type:LOGIN_ADMIN_SUCCESS})
+            navigate("/admin")
+        }
+        else{
+           console.log(formData);
+            dispatch(loginUser(formData)).then(()=>{
+              navigate("/instructor")
+            })
+         
+        }
   }
 
   function handleChange(e) {
@@ -55,6 +62,7 @@ const Login = () => {
               <FormControl id="email">
                 <FormLabel>Email</FormLabel>
                 <Input
+                required
                   type="email"
                   placeholder="Enter email"
                   value={formData.email}
@@ -65,6 +73,7 @@ const Login = () => {
               <FormControl id="password">
                 <FormLabel>Password</FormLabel>
                 <Input
+                
                   type="password"
                   placeholder="Enter password"
                   value={formData.password}
