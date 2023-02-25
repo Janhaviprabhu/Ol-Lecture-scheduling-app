@@ -1,11 +1,11 @@
 import React from 'react'
-import InustructorNavbar from '../Components/InstructorNabvar'
+import InstructorPanel from '../Components/InstructorCourses'
 
 
 const Instructor = () => {
   return (
     <div>
-     <InustructorNavbar/>
+<InstructorPanel/>
     </div>
   )
 }

@@ -7,9 +7,6 @@ import {
   Stack,
   Collapse,
   Icon,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
@@ -21,8 +18,14 @@ import {
   ChevronRightIcon,
 } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../Context/AppContext';
+
+
 export default function AdminNavbar() {
   const { isOpen, onToggle } = useDisclosure();
+const{handleLogout}=useContext(AuthContext)
+
 
   return (
     <Box>
@@ -51,23 +54,15 @@ export default function AdminNavbar() {
         </Flex>
         <Flex gap={5} flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
           <Text
+          boxShadow={'xl'}
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
+            fontWeight={600}
+            fontSize="20px"
             color={useColorModeValue('gray.800', 'white')}>
             <Link to='/'>Home</Link>
           </Text>
-          <Text
-            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-            fontFamily={'heading'}
-            color={useColorModeValue('gray.800', 'white')}>
-            <Link to='/instructor'>Instructor List</Link>
-          </Text>
-          <Text
-            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-            fontFamily={'heading'}
-            color={useColorModeValue('gray.800', 'white')}>
-            <Link to='/instructor'>Add Course</Link>
-          </Text>
+         
 
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -79,12 +74,30 @@ export default function AdminNavbar() {
           flex={{ base: 1, md: 0 }}
           justify={'flex-end'}
           direction={'row'}
-          spacing={6}>
+          spacing={6}
+          >
          
           <Button
+          onClick={handleLogout}
             fontSize={'sm'}
-            fontWeight={400}>
-             <Link to="/login"> Sign In</Link>
+            fontWeight={400}
+             color={'white'}
+            bg={'red.300'}
+            
+            _hover={{
+              bg: 'red.200',
+            }}>
+              Logout
+          </Button>
+          <Button
+            fontSize={'sm'}
+            fontWeight={400}
+             color={'white'}
+            bg={'green.300'}
+            _hover={{
+              bg: 'green.200',
+            }}>
+             <Link to="/login"> Log In</Link>
           </Button>
           
           <Button
@@ -93,10 +106,10 @@ export default function AdminNavbar() {
             fontSize={'sm'}
             fontWeight={600}
             color={'white'}
-            bg={'blue.700'}
+            bg={'blue.500'}
             
             _hover={{
-              bg: 'blue.600',
+              bg: 'blue.300',
             }}>
             <Link to="/signup">Sign Up</Link>
           </Button>

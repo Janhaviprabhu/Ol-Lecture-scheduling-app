@@ -1,10 +1,10 @@
 import React from 'react'
-import AdminNavbar from '../Components/AdminNavbar'
+import Instructors from '../Components/AdminPanel'
 
 const Admin = () => {
   return (
     <div>
-      <AdminNavbar/>
+      <Instructors/>
     </div>
   )
 }

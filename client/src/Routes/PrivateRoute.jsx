@@ -1,17 +1,21 @@
-import {  useSelector } from "react-redux";
-import { Navigate} from 'react-router-dom';
-function PrivateRoute({children}) {
-    const {auth,admin} = useSelector((store) => store.auth)
+import { AuthContext } from "../Context/AppContext";
+import { Navigate } from "react-router-dom";
+import React from "react";
 
-      if(!auth){
-       return<Navigate to="/login"/>
-        }
-       else if (admin){
-        return<Navigate to="/admin"/>
-       }
-     else{
-          return (children)
-      }
+function PrivateRoute({ children }) {
+  const { userAuth,adminAuth } = React.useContext(AuthContext)
+  
+
+  if ( !adminAuth) {
+    return <Navigate to="/login" />;
+  }
+   else if(!userAuth){
+     return <Navigate to="/login" />;
+  }
+
+
+
+  return children;
 }
 
-export default PrivateRoute
+export default PrivateRoute;

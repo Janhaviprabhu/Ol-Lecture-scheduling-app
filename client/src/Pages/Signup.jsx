@@ -6,32 +6,40 @@ import {
   Heading,
   Input,
   Stack,
+  Text,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../Redux/auth/actions";
+import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../Components/Navbar";
 
 
 export default function Signup() {
-  const { isRegister, authLoading, authError } = useSelector(
-    (store) => store.auth
-  );
-  const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ name:"",email: "",password: ""});
   const navigate = useNavigate();
+
+   async function handleSignup(user){
+   let signup=await axios.post("https://onlineschedule.onrender.com/signup",user)
+   console.log(signup.data);
+   return (signup.data);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(formData);
+   
+  
     try {
-      dispatch(registerUser(formData))
-      .then(()=>{
+       handleSignup(formData).then((res)=>{
+      if(res==="Email already exist , Try using diffrent email"){
+        alert("Email already exist , Try using diffrent email")
+      }
+      else if (res==="Sign up Successfully!!"){
+        alert("Sign up Successfully!!")
         navigate('/login')
-      })
+      }
+    })
+  
+
     } catch (err) {
       console.log(err);
     }
@@ -44,18 +52,15 @@ export default function Signup() {
     
   }
 
-  if (authLoading) {
-    return <div>....Loading</div>;
-  } else if (authError) {
-    return <div>....Error</div>;
-  }
+
   return (
     <>
-      <Flex minH={"100vh"} align={"center"} justify={"center"} bg="blue.50">
+      <Flex minH={"90vh"} align={"center"} justify={"center"} bg="blue.50">
         <Stack
-          spacing={4}
+          spacing={8}
           w="full"
-          maxW={"md"}
+          mx={"auto"}
+          maxW={"sm"}
           bg={"white"}
           rounded={"xl"}
           boxShadow={"lg"}
@@ -65,7 +70,20 @@ export default function Signup() {
           <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
             SignUp
           </Heading>
-          <form onSubmit={handleSubmit}>
+          
+          
+            <Stack spacing={6}>
+              <FormControl id="name" isRequired>
+              <FormLabel>Name</FormLabel>
+              <Input
+                placeholder="sample"
+                _placeholder={{ color: "gray.500" }}
+                type="text"
+                value={formData.name}
+                name="name"
+                onChange={ handleChange}
+              />
+            </FormControl>
             <FormControl id="email" isRequired>
               <FormLabel>Email</FormLabel>
               <Input
@@ -74,7 +92,7 @@ export default function Signup() {
                 type="email"
                 value={formData.email}
                 name="email"
-                onChange={(e) => handleChange(e)}
+                onChange={ handleChange}
               />
             </FormControl>
             <FormControl id="password" isRequired>
@@ -85,10 +103,11 @@ export default function Signup() {
                 type="password"
                 value={formData.password}
                 name="password"
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
               />
             </FormControl>
-            <Input
+            <Button
+            onClick={handleSubmit}
               bg={"blue.400"}
               color={"white"}
               w="full"
@@ -98,8 +117,14 @@ export default function Signup() {
               }}
               type="submit"
               value={"Register"}
-            />
-          </form>
+            >Signup</Button>
+             </Stack>
+          <Stack pt={6}>
+              <Text align={'center'}>
+                Already a user? <Link to='/login' color={'blue.400'} >Login</Link>
+              </Text>
+            </Stack>
+         
         </Stack>
       </Flex>
 </>

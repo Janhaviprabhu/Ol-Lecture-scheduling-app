@@ -8,43 +8,54 @@ import {
   Stack,
   Button,
   Heading,
+  Text,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom"
-import { useDispatch, useSelector } from "react-redux"
-import { loginUser } from "../Redux/auth/actions"
-import { LOGIN_ADMIN_SUCCESS } from "../Redux/auth/actionTypes";
+import { Link, useNavigate } from "react-router-dom"
+
+
+import axios from "axios";
+import { AuthContext } from "../Context/AppContext";
+
 
 const Login = () => {
-  const { logLoading, loggedUser, logError } = useSelector(
-    (store) => store.auth
-  );
-
-  const dispatch = useDispatch();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "" })
   const navigate = useNavigate();
+ const {handleAdminLogin,handleUserLogin  } = React.useContext(AuthContext)
+
+ async function handleLogin(user){
+   let login=await axios.post("https://onlineschedule.onrender.com/login",user)
+   return (login.data);
+  }
+
+
+
+
 
   function handleSubmit(e) {
     e.preventDefault();
-    if(formData.email==="admin@gmail.com" && formData.password==="admin123"){
-          dispatch({type:LOGIN_ADMIN_SUCCESS})
-            navigate("/admin")
+    if(formData.email!=="" && formData.password!==""){
+      handleLogin(formData).then((res)=>{
+        if(res.message==='User Logged in as Admin'){
+          handleAdminLogin()
+          alert(res.message)
+          navigate('/admin')
+        }else if (res.message==="User Logged in Succefully!!"){
+          handleUserLogin()
+          localStorage.setItem("id",res.id)
+          alert(res.message)
+            navigate('/instructor')
+        }else{
+         alert("Enter correct Credentials")
         }
-        else{
-           console.log(formData);
-            dispatch(loginUser(formData)).then(()=>{
-              navigate("/instructor")
-            })
-         
-        }
+      })
+    }else {
+      alert("Please enter all feilds")
+    }
+    
   }
 
   function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-  if (logLoading) {
-    return <div>....Loading</div>;
-  } else if (logError) {
-    return <div>....Error</div>;
   }
   return (
     <>
@@ -56,10 +67,10 @@ const Login = () => {
         justify={"center"}
       >
         <Stack spacing={8} mx={"auto"} mt={0} maxW={"lg"} py={2} px={1}>
-          <Box w={"100%"} rounded={"lg"} bg={"white"} boxShadow={"xl"} p={10}>
+          <Box w={"120%"} rounded={"lg"} bg={"white"} boxShadow={"xl"} p={10}>
              <Heading lineHeight={1.1} fontSize={"4xl"}>Log In </Heading>
-            <Stack spacing={4}>
-              <FormControl id="email">
+            <Stack spacing={6}>
+              <FormControl id="email" isRequired>
                 <FormLabel>Email</FormLabel>
                 <Input
                 required
@@ -70,7 +81,7 @@ const Login = () => {
                   onChange={(e) => handleChange(e)}
                 />
               </FormControl>
-              <FormControl id="password">
+              <FormControl id="password" isRequired>
                 <FormLabel>Password</FormLabel>
                 <Input
                 
@@ -82,11 +93,6 @@ const Login = () => {
                 />
               </FormControl>
               <Stack spacing={10}>
-                <Stack
-                  direction={{ base: "column", sm: "row" }}
-                  align={"start"}
-                  justify={"space-between"}
-                ></Stack>
                 <Button
                   bg={"blue.500"}
                   color={"white"}
@@ -98,6 +104,11 @@ const Login = () => {
                   Login
                 </Button>
               </Stack>
+               <Stack pt={6}>
+              <Text align={'center'}>
+                Not a user? <Link to='/signup' color={'blue.400'} >Signup</Link>
+              </Text>
+            </Stack>
             </Stack>
           </Box>
         </Stack>
