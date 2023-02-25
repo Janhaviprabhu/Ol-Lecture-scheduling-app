@@ -3,7 +3,7 @@ const { CourseModel } = require('../models/course');
 const { InstructorModel } = require('../models/instructor');
 const AdminRouter = Router()
 
-AdminRouter.get('/instructors',async(req,res)=>{
+AdminRouter.get('/instructors', async (req, res) => {
     try {
         const instructors = await InstructorModel.find();
         res.send(instructors);
@@ -37,7 +37,7 @@ AdminRouter.post('/courses', async (req, res) => {
             const instructor = await InstructorModel.findById(batches[i].instructor);
 
             if (!instructor) {
-                return res.status(400).json({
+                return res.status(400).send({
                     message: `Instructor with ID ${batches[i].instructor} not found`
                 });
             }
@@ -48,7 +48,7 @@ AdminRouter.post('/courses', async (req, res) => {
             });
 
             if (existingCourse) {
-                return res.status(400).json({
+                return res.status(400).send({
                     message: `Instructor ${instructor.name} is already assigned to another course on ${batches[i].date}`
                 });
             }

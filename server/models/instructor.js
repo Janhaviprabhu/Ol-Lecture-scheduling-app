@@ -6,7 +6,11 @@ const instructorSchema = new mongoose.Schema({
         required: true
     },
     email: String,
-    password: String
+    password: String,
+    courses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course'
+    }]
 
 
 });

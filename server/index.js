@@ -40,21 +40,32 @@ app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {
         if (email == 'admin@gmail.com' && password == 'admin123') {
-            res.status(200).send("Logged in as admin")
+            res.status(200).send({ message: "User Logged in as Admin" })
         }
-        else if (email && password) {
-            const user = await InstructorModel.findOne({ email: email });
-            const pw = await InstructorModel.findOne({ password: password })
-            if (user != null && pw != null) {
-                if (user.email === email && pw.password === password) {
-                    res.status(200).send({ message: "User Logged in Succefully!!" });
-                } else {
-                    res.status(401).send({ message: "Incorrect! Enter correct credentials!!" });
-                }
-            } else {
-                res.status(405).send({ message: "User not found with this email, need to register!" });
+
+
+        else {
+            const user = await InstructorModel.findOne({ email: email })
+
+            if (user && user.password == password) {
+                // if (user.email === email) {
+                //     res.status(200).send({ message: "User Logged in Succefully!!" });
+                // } else {
+                //     res.status(401).send({ message: "Incorrect! Enter correct credentials!!" });
+                // }
+                res.status(200).send({ message: "User Logged in Succefully!!",id:user._id });
             }
+            else if (user.password != password) {
+                res.status(401).send({ message: "Incorrect! Enter correct credentials!!" });
+            }
+            else {
+                res.status(405).send({ message: "User not found with this email, need to register!" });
+
+            }
+
         }
+
+
     } catch (err) {
         console.log(err)
         res.send("Something went wrong, pls try again later")

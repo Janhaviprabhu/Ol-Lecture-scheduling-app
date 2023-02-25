@@ -1,5 +1,17 @@
 const mongoose = require('mongoose');
 
+const batchSchema = new mongoose.Schema({
+    date: {
+        type: Date,
+        required: true
+    },
+    instructor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'instructor',
+        required: true
+    }
+});
+
 const courseSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -17,19 +29,11 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    batches: [{
-        date: {
-            type: Date,
-            required: true
-        },
-        instructor: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Instructor',
-            required: true
-        }
-    }]
+    batches: [batchSchema]
 });
+
+
 
 const CourseModel = mongoose.model('Course', courseSchema)
 
-module.exports={CourseModel}
+module.exports = { CourseModel }
